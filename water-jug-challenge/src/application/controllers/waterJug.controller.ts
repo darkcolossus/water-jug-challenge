@@ -19,7 +19,7 @@ export class WaterJugController {
         @Body() payloadDTO: PayloadDTO,
     ): Promise<SolutionDTO> {
         this.logger.log('METHOD jug')
-        return await this.waterJugService.solve(payloadDTO);
+        return await this.waterJugService.solve(payloadDTO, 'bfs');
     }
 
     

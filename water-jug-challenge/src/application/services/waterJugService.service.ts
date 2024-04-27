@@ -13,15 +13,37 @@ export class WaterJugService {
 
     constructor() {}
 
-    async solve(payload: PayloadDTO, method: 'bfs' | 'dfs' = 'bfs') {
-        this.logger.log('METHOD - getSolution')
+    async solve(payload: PayloadDTO, method: 'bfs' | 'dfs' = 'bfs') : Promise<SolutionDTO>{
+        this.logger.log(`METHOD - getSolution: ${method}`);
         let solution = method === 'bfs'? this.bfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted):
                                          this.dfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted);
-        return new SolutionDTO(solution);
+        return solution.length > 0? new SolutionDTO(solution): new SolutionDTO([new SolutionStepDTO(0, 0, 0, '', 'No solution!')]);
     }
 
     dfs(xCapacity: number, yCapacity: number, zAmountWanted: number) : SolutionStepDTO[] {
-        return null;
+        let stack: NodeWJ[] = [new NodeWJ(new State(0, 0), null, 'Start', 0)];
+        let visited: Set<string> = new Set(['0,0']);
+
+        while(stack.length > 0) {
+            let current = stack.pop()!;
+            let {bucketX, bucketY} = current.state;
+
+            if (bucketX === zAmountWanted || bucketY === zAmountWanted) {
+                current.status = "Solved";
+                return this.solutionPath(current);
+            }
+
+            this.generatePossibleActions(current, xCapacity, yCapacity).forEach(actionNode => {
+                let stateKey = `${actionNode.state.bucketX},${actionNode.state.bucketY}`;
+
+                if(!visited.has(stateKey)) {
+                    visited.add(stateKey);
+                    stack.push(actionNode);
+                }
+            });
+        }
+        
+        return [];
     }
 
     bfs(xCapacity: number, yCapacity: number, zAmountWanted: number) : SolutionStepDTO[] {
