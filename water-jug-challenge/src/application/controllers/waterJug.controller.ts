@@ -10,16 +10,16 @@ export class WaterJugController {
 
     constructor(private readonly waterJugService: WaterJugService) {}
 
-    @Post('/jug')
+    @Post('/solve')
     @ApiResponse({
         status: 201,
         description: 'solve puzzle.'
     })
-    async jug(
+    async solve(
         @Body() payloadDTO: PayloadDTO,
     ): Promise<SolutionDTO> {
         this.logger.log('METHOD jug')
-        return await this.waterJugService.getSolution(payloadDTO);
+        return await this.waterJugService.solve(payloadDTO);
     }
 
     

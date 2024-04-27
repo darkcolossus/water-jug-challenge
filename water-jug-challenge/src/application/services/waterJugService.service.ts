@@ -10,7 +10,7 @@ export class WaterJugService {
 
     constructor() {}
 
-    async getSolution(payload: PayloadDTO) {
+    async solve(payload: PayloadDTO) {
         this.logger.log('METHOD - getSolution')
         const st1 = new SolutionStepDTO(1, 2, 0, "Fill bucket X")
         const st2 = new SolutionStepDTO(2, 0, 2, "Transfer from bucket X to Y")
