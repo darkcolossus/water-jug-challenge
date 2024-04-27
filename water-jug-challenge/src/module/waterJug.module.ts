@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { WaterJugController } from "src/application/controllers/waterJug.controller";
-import { WaterJugService } from "src/application/services/waterJugService.service";
+import { WaterJugController } from "../application/controllers/waterJug.controller";
+import { WaterJugService } from "../application/services/waterJugService.service";
 
 @Module({
     controllers: [WaterJugController],

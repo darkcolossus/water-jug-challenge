@@ -2,9 +2,8 @@ import { Injectable, Logger } from "@nestjs/common";
 import { PayloadDTO } from "../dto/inputs/payload.dto";
 import { SolutionStepDTO } from "../dto/outputs/solutionStep.dto";
 import { SolutionDTO } from "../dto/outputs/solution.dto";
-import { NodeWJ } from "src/domain/models/nodeWJ.model";
-import { State } from "src/domain/models/state.model";
-import { last } from "rxjs";
+import { NodeWJ } from "../../domain/models/nodeWJ.model";
+import { State } from "../../domain/models/state.model";
 
 @Injectable()
 export class WaterJugService {
