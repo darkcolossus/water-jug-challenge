@@ -31,9 +31,11 @@ export class WaterJugService {
             // Add Cache solution value (stringify) for cachekey
             await this.redisClient.set(cacheKey, JSON.stringify(new SolutionDTO(solution)), 'EX', 3600);
             return new SolutionDTO(solution)
+        } else {
+            let stepSolution = new SolutionStepDTO(0, 0, 0, '', 'No solution!');
+            await this.redisClient.set(cacheKey, JSON.stringify(new SolutionDTO([stepSolution])), 'EX', 3600);
+            return new SolutionDTO([stepSolution]);
         }
-        
-        return new SolutionDTO([new SolutionStepDTO(0, 0, 0, '', 'No solution!')]);
     }
 
     dfs(xCapacity: number, yCapacity: number, zAmountWanted: number) : SolutionStepDTO[] {
