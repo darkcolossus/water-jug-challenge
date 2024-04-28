@@ -144,12 +144,20 @@ Response:
 ## Algorithms
 Water Jug Service implements a solve method which receives:
  - payload
- - heuristic: 'bfs' | 'dfs'
+ - method: 'bfs' | 'dfs' | 'aStar'|
 
-1) BFS - this heuristic uses:
+1) BFS - this algorithm uses:
     - a queue data structure in order to push all steps nodes when finding the solution.
     - a set of visited nodes to avoid analyzing nodes that were previously visited in the aim of searching the solution node.
 
-2) DFS - this heuristic uses:
+2) DFS - this algorithm uses:
     - a stack data structure in order to push all steps Nodes when finding the solution.
     - a set of visited nodes to avoid analyzing nodes that were previously visited in the aim of searching the solution node.
+
+3) ASTAR - this algortihm uses:
+    - a priority queue based on an heuristic function
+    - each Node in the priority queue contains:
+        a) param g = cost value from start to current node. For simplicity, it considers any possible movement/action from node to node with a cost of 1.
+        b) param h = cost value from current node to the goal.
+        c) param f = f + g which is the total cost of the node.
+    - heuristic function: this function returns Min( |z_amount_wanted - currentNode.state.bucketX|, |z_amount_wanted - currentNode.state.bucketY|).
