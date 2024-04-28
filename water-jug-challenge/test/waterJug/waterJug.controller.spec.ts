@@ -81,7 +81,7 @@ describe('WaterJugController', () => {
         const solutionBFS = await waterJugService.solve(payload, 'bfs');
         expect(solutionBFS.solution[0].status).toEqual('No solution!');
         const solutionDFS = await waterJugService.solve(payload, 'dfs');
-        expect(solutionBFS.solution[0].status).toEqual('No solution!');
+        expect(solutionDFS.solution[0].status).toEqual('No solution!');
     });
 
     it('should return a solution BFS or DFS', async () => {
@@ -105,7 +105,7 @@ describe('WaterJugController', () => {
         const solutionBFS = await waterJugService.solve(payload, 'bfs');
         expect(solutionBFS.solution[0].status).toEqual('No solution!');
         const solutionDFS = await waterJugService.solve(payload, 'dfs');
-        expect(solutionBFS.solution[0].status).toEqual('No solution!');
+        expect(solutionDFS.solution[0].status).toEqual('No solution!');
     });
 
     it('should return a solution BFS or DFS', async () => {
@@ -121,7 +121,7 @@ describe('WaterJugController', () => {
         const solutionBFS = await waterJugService.solve(payload, 'bfs');
         expect(solutionBFS.solution[0].status).toEqual('No solution!');
         const solutionDFS = await waterJugService.solve(payload, 'dfs');
-        expect(solutionBFS.solution[0].status).toEqual('No solution!');
+        expect(solutionDFS.solution[0].status).toEqual('No solution!');
     });
 
     it('should not return a solution BFS or DFS', async () => {
@@ -129,6 +129,12 @@ describe('WaterJugController', () => {
         const solutionBFS = await waterJugService.solve(payload, 'bfs');
         expect(solutionBFS.solution[0].status).toEqual('No solution!');
         const solutionDFS = await waterJugService.solve(payload, 'dfs');
-        expect(solutionBFS.solution[0].status).toEqual('No solution!');
+        expect(solutionDFS.solution[0].status).toEqual('No solution!');
+    });
+
+    it('should return a solution using aStar', async () => {
+        const payload = { x_capacity: 1000000, y_capacity: 1600020, z_amount_wanted: 500020};
+        const solutionAstar = await waterJugService.solve(payload, 'aStar');
+        expect(solutionAstar.solution[solutionAstar.solution.length-1].status).toEqual('Solved');
     });
   });
