@@ -21,6 +21,4 @@ export class WaterJugController {
         this.logger.log('METHOD solve')
         return await this.waterJugService.solve(payloadDTO, 'aStar');
     }
-
-    
 }

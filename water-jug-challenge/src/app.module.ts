@@ -9,10 +9,6 @@ import { WaterJugModule } from './module/waterJug.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // RedisModule.forRoot({
-    //   type: 'single',
-    //   url: 'redis://localhost:6379',
-    // }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
