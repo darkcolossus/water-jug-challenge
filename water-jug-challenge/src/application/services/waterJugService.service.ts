@@ -4,19 +4,36 @@ import { SolutionStepDTO } from "../dto/outputs/solutionStep.dto";
 import { SolutionDTO } from "../dto/outputs/solution.dto";
 import { NodeWJ } from "../../domain/models/nodeWJ.model";
 import { State } from "../../domain/models/state.model";
+import { InjectRedis } from "@nestjs-modules/ioredis";
+import { Redis } from "ioredis";
 
 @Injectable()
 export class WaterJugService {
 
     logger = new Logger('WaterJugService');
 
-    constructor() {}
+    constructor(@InjectRedis() private readonly redisClient: Redis) {}
 
     async solve(payload: PayloadDTO, method: 'bfs' | 'dfs' = 'bfs') : Promise<SolutionDTO>{
+        // Check if cacheKey exists in Redis
+        let cacheKey = `waterjug:solution:${payload.x_capacity}:${payload.x_capacity}:${payload.z_amount_wanted}:${method}`;
+        let cachedSolution = await this.redisClient.get(cacheKey);
+
+        if (cachedSolution) {
+            this.logger.log('Returnng cached solution');
+            return JSON.parse(cachedSolution);
+        }
+
         this.logger.log(`METHOD - getSolution: ${method}`);
         let solution = method === 'bfs'? this.bfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted):
                                          this.dfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted);
-        return solution.length > 0? new SolutionDTO(solution): new SolutionDTO([new SolutionStepDTO(0, 0, 0, '', 'No solution!')]);
+        if (solution.length > 0) {
+            // Add Cache solution value (stringify) for cachekey
+            await this.redisClient.set(cacheKey, JSON.stringify(new SolutionDTO(solution)), 'EX', 3600);
+            return new SolutionDTO(solution)
+        }
+        
+        return new SolutionDTO([new SolutionStepDTO(0, 0, 0, '', 'No solution!')]);
     }
 
     dfs(xCapacity: number, yCapacity: number, zAmountWanted: number) : SolutionStepDTO[] {
