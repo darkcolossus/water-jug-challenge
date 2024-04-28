@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "6d3fbf45-b886-455b-a8a3-faba9f561e23",
+		"name": "Water Jug Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4043409"
+	},
+	"item": [
+		{
+			"name": "healthCheck",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"x_capacity\": 50000,\n    \"y_capacity\": 100000,\n    \"z_amount_wanted\": 20000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/solve",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"solve"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
