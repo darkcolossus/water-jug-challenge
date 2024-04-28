@@ -161,3 +161,12 @@ Water Jug Service implements a solve method which receives:
         b) param h = cost value from current node to the goal.
         c) param f = f + g which is the total cost of the node.
     - heuristic function: this function returns Min( |z_amount_wanted - currentNode.state.bucketX|, |z_amount_wanted - currentNode.state.bucketY|).
+
+The algorithm used can be configure in .env file by using variable:
+
+```bash
+SOLVE_METHOD=
+```
+
+where possible values here are: 
+    -aStar, bfs or dfs (aStar is set by default)
