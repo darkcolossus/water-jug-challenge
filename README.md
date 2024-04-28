@@ -169,4 +169,4 @@ SOLVE_METHOD=
 ```
 
 where possible values here are: 
-    -aStar, bfs or dfs (aStar is set by default)
+    aStar, bfs or dfs (aStar is set by default)
