@@ -141,6 +141,13 @@ Response:
 }
 ```
 
+## Swagger
+You can access to the description of the API by bitting:
+
+```bash
+    http://localhost/3000/api
+```
+
 ## Algorithms
 Water Jug Service implements a solve method which receives:
  - payload
