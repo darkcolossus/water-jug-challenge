@@ -18,7 +18,7 @@ export class WaterJugController {
     async solve(
         @Body() payloadDTO: PayloadDTO,
     ): Promise<SolutionDTO> {
-        this.logger.log('METHOD jug')
+        this.logger.log('METHOD solve')
         return await this.waterJugService.solve(payloadDTO, 'bfs');
     }
 
