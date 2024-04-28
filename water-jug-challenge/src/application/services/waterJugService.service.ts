@@ -20,7 +20,7 @@ export class WaterJugService {
         let cachedSolution = await this.redisClient.get(cacheKey);
 
         if (cachedSolution) {
-            this.logger.log('Returnng cached solution');
+            this.logger.log('Returning cached solution');
             return JSON.parse(cachedSolution);
         }
 
