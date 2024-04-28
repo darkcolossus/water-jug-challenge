@@ -6,6 +6,7 @@ import { NodeWJ } from "../../domain/models/nodeWJ.model";
 import { State } from "../../domain/models/state.model";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import { Redis } from "ioredis";
+import { PriorityQueue } from 'typescript-collections';
 
 @Injectable()
 export class WaterJugService {
@@ -14,7 +15,8 @@ export class WaterJugService {
 
     constructor(@InjectRedis() private readonly redisClient: Redis) {}
 
-    async solve(payload: PayloadDTO, method: 'bfs' | 'dfs' = 'bfs') : Promise<SolutionDTO>{
+    async solve(payload: PayloadDTO, method: 'aStar' | 'bfs' | 'dfs' = 'aStar') : Promise<SolutionDTO>{
+        this.logger.log(`Algorithm used: ${method}`);
         // Check if cacheKey exists in Redis
         let cacheKey = `waterjug:solution:${payload.x_capacity}:${payload.x_capacity}:${payload.z_amount_wanted}:${method}`;
         let cachedSolution = await this.redisClient.get(cacheKey);
@@ -25,8 +27,21 @@ export class WaterJugService {
         }
 
         this.logger.log(`METHOD - getSolution: ${method}`);
-        let solution = method === 'bfs'? this.bfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted):
-                                         this.dfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted);
+        
+        let solution;
+
+        switch(method) {
+            case 'aStar':
+                solution = this.aStar(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted);
+                break;
+            case 'bfs':
+                solution = this.bfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted);
+                break;
+            case 'dfs':
+                solution = this.dfs(payload.x_capacity, payload.y_capacity, payload.z_amount_wanted);
+                break;
+        }
+
         if (solution.length > 0) {
             // Add Cache solution value (stringify) for cachekey
             await this.redisClient.set(cacheKey, JSON.stringify(new SolutionDTO(solution)), 'EX', 3600);
@@ -73,7 +88,7 @@ export class WaterJugService {
             let {bucketX, bucketY} = current.state;
 
             if (bucketX === zAmountWanted || bucketY === zAmountWanted) {
-                current.status = "Solved"
+                current.status = "Solved";
                 return this.solutionPath(current);
             }
 
@@ -88,6 +103,44 @@ export class WaterJugService {
         }
 
         return [];
+    }
+
+    aStar(xCapacity: number, yCapacity: number, zAmountWanted: number) : SolutionStepDTO[] {
+        const pq = new PriorityQueue<NodeWJ>((a, b) => a.f < b.f ? -1 : a.f > b.f ? 1 : 0);
+        const startNode = new NodeWJ(new State(0,0), null, 'Start', 0);
+        startNode.g = 0;
+        startNode.h = this.heuristic(startNode.state, zAmountWanted);
+        startNode.f = startNode.g + startNode.h;
+        pq.enqueue(startNode);
+        let visited: Set<string> = new Set(['0,0']);
+
+        while(!pq.isEmpty()) {
+            let current = pq.dequeue();
+            let {bucketX, bucketY} = current.state;
+
+            if (bucketX === zAmountWanted || bucketY === zAmountWanted) {
+                current.status = "Solved";
+                return this.solutionPath(current);
+            }
+
+            this.generatePossibleActions(current, xCapacity, yCapacity).forEach((actionNode) => {
+                let actionNodeStateKey = `${actionNode.state.bucketX},${actionNode.state.bucketY}}`;
+                actionNode.g = current.g + 1;
+                actionNode.h = this.heuristic(actionNode.state, zAmountWanted);
+                actionNode.f = actionNode.g + actionNode.h;
+
+                if (!visited.has(actionNodeStateKey) || actionNode.f < current.f) {
+                    visited.add(actionNodeStateKey);
+                    pq.enqueue(actionNode);
+                }
+            });
+        }
+
+        return [];
+    }
+
+    heuristic(state: State, zAmountWanted: number): number {
+        return Math.min(Math.abs(zAmountWanted - state.bucketX), Math.abs(zAmountWanted - state.bucketY));
     }
 
     generatePossibleActions(currentNode: NodeWJ, xCapacity: number, yCapacity: number) : NodeWJ[] {
