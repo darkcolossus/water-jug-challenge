@@ -18,7 +18,7 @@ export class WaterJugService {
     async solve(payload: PayloadDTO, method: string) : Promise<SolutionDTO>{
         this.logger.log(`Algorithm used: ${method}`);
         // Check if cacheKey exists in Redis
-        let cacheKey = `waterjug:solution:${payload.x_capacity}:${payload.x_capacity}:${payload.z_amount_wanted}:${method}`;
+        let cacheKey = `waterjug:solution:${payload.x_capacity}:${payload.y_capacity}:${payload.z_amount_wanted}:${method}`;
         let cachedSolution = await this.redisClient.get(cacheKey);
 
         if (cachedSolution) {
