@@ -1,5 +1,5 @@
 # water-jug-challenge
-Water Jug Riddle solution
+Water Jug Riddle Solution
 
 ## Description of Framework used
 
